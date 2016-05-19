@@ -2,8 +2,9 @@
 
 A library which returns the full path to the Git binary if it can be found.
 
-[![Build Status](https://travis-ci.org/Fraser999/Find-Git.svg?branch=master)](https://travis-ci.org/Fraser999/Find-Git)
 [![Build status](https://ci.appveyor.com/api/projects/status/ghw5rs1xm21kq0yl/branch/master?svg=true)](https://ci.appveyor.com/project/Fraser999/find-git/branch/master)
+[![Build Status](https://travis-ci.org/Fraser999/Find-Git.svg?branch=master)](https://travis-ci.org/Fraser999/Find-Git)
+[![](http://meritbadge.herokuapp.com/find_git)](https://crates.io/crates/find_git)
 
 [Documentation](http://fraser999.github.io/Find-Git)
 

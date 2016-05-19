@@ -5,8 +5,8 @@ documentation = "http://fraser999.github.io/Find-Git"
 license = "MIT/Apache-2.0"
 name = "find_git"
 readme = "README.md"
-repository = "https://github.com/Fraser999/find_git"
-version = "1.0.0"
+repository = "https://github.com/Fraser999/Find-Git"
+version = "1.0.1"
 
 [lib]
 name = "find_git"
@@ -18,7 +18,7 @@ path = "src/bin.rs"
 doc = false
 
 [dependencies]
-clippy = {version = "0", optional = true}
+clippy = {version = "0.0", optional = true}
 
 [target.'cfg(windows)'.dependencies]
 winapi = "0.2"
