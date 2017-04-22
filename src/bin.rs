@@ -1,4 +1,5 @@
 //! A program which prints the full path to the Git binary if it can be found.
+
 extern crate find_git;
 
 fn main() {
