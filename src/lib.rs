@@ -1,5 +1,6 @@
 //! A cross-platform library which returns the full path to the Git binary if it can be found.
 
+#![forbid(warnings)]
 #![warn(missing_copy_implementations, trivial_casts, trivial_numeric_casts, unsafe_code,
         unused_extern_crates, unused_import_braces, unused_qualifications, unused_results,
         variant_size_differences)]
@@ -21,10 +22,9 @@ const LOCATE_COMMAND: &'static str = "where";
 #[cfg(not(windows))]
 const LOCATE_COMMAND: &'static str = "which";
 
-
 fn git_ran_ok<S: AsRef<OsStr>>(binary_path: S) -> bool {
     Command::new(binary_path)
-        .args(&["--version"])
+        .arg("--version")
         .stdout(Stdio::null())
         .stderr(Stdio::null())
         .status()
@@ -32,16 +32,17 @@ fn git_ran_ok<S: AsRef<OsStr>>(binary_path: S) -> bool {
 }
 
 fn try_git_with_no_path() -> Option<::std::path::PathBuf> {
-    if git_ran_ok("git") {
-        let output = Command::new(LOCATE_COMMAND)
-            .args(&["git"])
-            .output()
-            .expect(&format!("`{} git` failed", LOCATE_COMMAND))
-            .stdout;
-        let git = str::from_utf8(&output)
+    if let Ok(output) = Command::new(LOCATE_COMMAND).arg("git").output() {
+        let git = str::from_utf8(&output.stdout)
             .expect(&format!("Non-UTF8 output when running `{} git`.", LOCATE_COMMAND))
-            .trim();
-        return Some(PathBuf::from(git));
+            .trim()
+            .lines()
+            .next()
+            .expect(&format!("Should have had at least one line of text when running `{} git`.",
+                             LOCATE_COMMAND));
+        if git_ran_ok(&git) {
+            return Some(PathBuf::from(git));
+        }
     }
     None
 }

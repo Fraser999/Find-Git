@@ -7,7 +7,7 @@ license = "MIT/Apache-2.0"
 name = "find_git"
 readme = "README.md"
 repository = "https://github.com/Fraser999/Find-Git.git"
-version = "1.0.3"
+version = "1.1.1"
 
 [lib]
 name = "find_git"
