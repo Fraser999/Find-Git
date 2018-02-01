@@ -38,8 +38,10 @@ fn try_git_with_no_path() -> Option<::std::path::PathBuf> {
             .trim()
             .lines()
             .next()
-            .expect(&format!("Should have had at least one line of text when running `{} git`.",
-                             LOCATE_COMMAND));
+            .expect(&format!(
+                "Should have had at least one line of text when running `{} git`.",
+                LOCATE_COMMAND
+            ));
         if git_ran_ok(&git) {
             return Some(PathBuf::from(git));
         }
@@ -53,18 +55,18 @@ mod find_git {
     use std::ffi::OsStr;
     use std::io::Result;
     use std::path::PathBuf;
-    use winapi::HKEY;
+    use winapi::shared::minwindef::HKEY;
     use winreg::RegKey;
     use winreg::enums::{HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE, KEY_READ};
 
-    fn try_full_path_to_git<P: AsRef<OsStr>>(predefined_key: HKEY,
-                                             subkey_path: P,
-                                             value: P)
-                                             -> Option<PathBuf> {
+    fn try_full_path_to_git<P: AsRef<OsStr>>(
+        predefined_key: HKEY,
+        subkey_path: P,
+        value: P,
+    ) -> Option<PathBuf> {
         let root = RegKey::predef(predefined_key);
         if let Ok(subkey) = root.open_subkey_with_flags(subkey_path, KEY_READ) {
-            let subkey_value: Result<String> =
-                subkey.get_value(value);
+            let subkey_value: Result<String> = subkey.get_value(value);
             if let Ok(install_path) = subkey_value {
                 let binary_path = PathBuf::from(&install_path).join("bin").join("git.exe");
                 if git_ran_ok(binary_path.as_os_str()) {

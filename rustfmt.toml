@@ -1,9 +1,6 @@
 chain_indent = "Visual"
-chain_one_line_max = -1
-condense_wildcard_suffices = true
 fn_call_width = 100
 fn_single_line = true
-ideal_width = 100
 newline_style = "Native"
 reorder_imports = true
 reorder_imported_names = true
