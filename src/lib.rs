@@ -1,11 +1,17 @@
 //! A cross-platform library which returns the full path to the Git binary if it can be found.
 
 #![forbid(warnings)]
-#![warn(missing_copy_implementations, trivial_casts, trivial_numeric_casts, unsafe_code,
-        unused_extern_crates, unused_import_braces, unused_qualifications, unused_results,
-        variant_size_differences)]
-#![cfg_attr(feature="cargo-clippy", deny(clippy, clippy_pedantic))]
-#![cfg_attr(feature="cargo-clippy", allow(missing_docs_in_private_items))]
+#![warn(
+    missing_copy_implementations,
+    trivial_casts,
+    trivial_numeric_casts,
+    unsafe_code,
+    unused_extern_crates,
+    unused_import_braces,
+    unused_qualifications,
+    unused_results,
+    variant_size_differences
+)]
 
 #[cfg(windows)]
 extern crate winapi;
@@ -20,7 +26,7 @@ use std::str;
 #[cfg(windows)]
 const LOCATE_COMMAND: &'static str = "where";
 #[cfg(not(windows))]
-const LOCATE_COMMAND: &'static str = "which";
+const LOCATE_COMMAND: &str = "which";
 
 fn git_ran_ok<S: AsRef<OsStr>>(binary_path: S) -> bool {
     Command::new(binary_path)
@@ -34,15 +40,17 @@ fn git_ran_ok<S: AsRef<OsStr>>(binary_path: S) -> bool {
 fn try_git_with_no_path() -> Option<::std::path::PathBuf> {
     if let Ok(output) = Command::new(LOCATE_COMMAND).arg("git").output() {
         let git = str::from_utf8(&output.stdout)
-            .expect(&format!("Non-UTF8 output when running `{} git`.", LOCATE_COMMAND))
+            .unwrap_or_else(|_| panic!("Non-UTF8 output when running `{} git`.", LOCATE_COMMAND))
             .trim()
             .lines()
             .next()
-            .expect(&format!(
-                "Should have had at least one line of text when running `{} git`.",
-                LOCATE_COMMAND
-            ));
-        if git_ran_ok(&git) {
+            .unwrap_or_else(|| {
+                panic!(
+                    "Should have had at least one line of text when running `{} git`.",
+                    LOCATE_COMMAND
+                )
+            });
+        if git_ran_ok(git) {
             return Some(PathBuf::from(git));
         }
     }
@@ -56,8 +64,8 @@ mod find_git {
     use std::io::Result;
     use std::path::PathBuf;
     use winapi::shared::minwindef::HKEY;
-    use winreg::RegKey;
     use winreg::enums::{HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE, KEY_READ};
+    use winreg::RegKey;
 
     fn try_full_path_to_git<P: AsRef<OsStr>>(
         predefined_key: HKEY,
@@ -79,7 +87,7 @@ mod find_git {
 
     /// Tries to find Git.  On Windows, if it is not currently available in `%PATH%`, tries using
     /// several known registry values.
-    #[cfg_attr(rustfmt, rustfmt_skip)]
+    #[rustfmt::skip]
     pub fn git_path() -> Option<PathBuf> {
         const SUBKEY_RECENT: &'static str = "Software\\GitForWindows";
         const SUBKEY_32_BIT: &'static str =
@@ -97,7 +105,9 @@ mod find_git {
 
 #[cfg(not(windows))]
 mod find_git {
-    pub fn git_path() -> Option<::std::path::PathBuf> { super::try_git_with_no_path() }
+    pub fn git_path() -> Option<::std::path::PathBuf> {
+        super::try_git_with_no_path()
+    }
 }
 
 pub use find_git::git_path;

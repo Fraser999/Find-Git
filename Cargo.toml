@@ -7,7 +7,7 @@ license = "MIT/Apache-2.0"
 name = "find_git"
 readme = "README.md"
 repository = "https://github.com/Fraser999/Find-Git.git"
-version = "1.2.0"
+version = "1.2.1"
 
 [lib]
 name = "find_git"
@@ -21,3 +21,6 @@ doc = false
 [target.'cfg(windows)'.dependencies]
 winapi = "0.3"
 winreg = "0.5"
+
+[badges.maintenance]
+status = "deprecated"
